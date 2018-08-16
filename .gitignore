@@ -1,0 +1,7 @@
+# Dir
+.idea
+.cache
+__pycache__
+
+# Files
+.DS_Store
