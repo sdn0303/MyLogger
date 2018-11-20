@@ -23,6 +23,7 @@ if __name__ == "__main__":
     LOGGER.debug("Start debug")
     try:
         LOGGER.warn("raise Exception")
+        LOGGER.warning("Warnning!! raise Exception")
         t.raise_error()
     except ZeroDivisionError:
         LOGGER.error("Division by Zero")
