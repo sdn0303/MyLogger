@@ -1,7 +1,8 @@
 # -*- Coding: UTF-8 -*-
-from datetime import datetime
+import time
 import logging
 import sys
+from datetime import datetime
 
 from termcolor import colored
 from colorama import Back, Fore, Style
@@ -12,7 +13,7 @@ STR_DATE = datetime.now().strftime("%Y-%m-%d %H:%M")
 
 
 class Logger(object):
-    """ ロガークラス"""
+    """ My Logger Class"""
     COLOR_MAP = {
         'debug': Fore.CYAN,
         'info': Fore.GREEN,
@@ -88,4 +89,24 @@ class Logger(object):
                 colored(func.__qualname__, "cyan", attrs=['bold']),
                 colored(rtn, "green")), end='\n\n')
             return rtn
+        return wrapper
+
+    def time_measure(self, func):
+        """ 実行時間測定
+
+        Args:
+            func: 各クラスのメソッド
+
+        Returns:
+            object(): wrapperメソッドの実行結果
+        """
+        def wrapper(obj, *args, **kwargs):
+            start = time.time()
+            self.logger.info("Measure execution time.")
+            self.logger.info("func: {}".format(func.__qualname__))
+            r = func(obj, *args, **kwargs)
+            end = time.time() - start
+            self.logger.info("Total elapsed time: {0} [sec]".format(end))
+            self.logger.info("Total elapsed time: {0} [min]".format((end // 60)))
+            return r
         return wrapper

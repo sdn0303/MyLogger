@@ -11,6 +11,10 @@ class TestClass(object):
     def test_func(self, x, y):
         return x * y - 100
 
+    @LOGGER.time_measure
+    def test_time(self, x, y):
+        return [i for i in range(x * y)]
+
     def raise_error(self):
         raise ZeroDivisionError
 
@@ -28,3 +32,5 @@ if __name__ == "__main__":
     except ZeroDivisionError:
         LOGGER.error("Division by Zero")
         LOGGER.critical("Division by Zero")
+
+    t.test_time(50, 50)
