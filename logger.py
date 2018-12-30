@@ -7,13 +7,11 @@ from datetime import datetime
 from termcolor import colored
 from colorama import Back, Fore, Style
 
-
 # Set Str Date
 STR_DATE = datetime.now().strftime("%Y-%m-%d %H:%M")
 
 
 class Logger(object):
-    """ My Logger Class"""
     COLOR_MAP = {
         'debug': Fore.CYAN,
         'info': Fore.GREEN,
@@ -38,6 +36,7 @@ class Logger(object):
             style_prefix = self.COLOR_MAP[attr_name]
             msg = style_prefix + msg + Style.RESET_ALL
             return self.logger._log(log_level, msg, args, **kwargs)
+
         return wrapped_attr
 
     @staticmethod
@@ -54,45 +53,19 @@ class Logger(object):
         stream_handler = logging.StreamHandler()
         fmt = "{} [{}] [{}:{}] [%(levelname)s] %(message)s".format(
             colored('%(asctime)s', "magenta", attrs=['reverse']),
-            colored('pid:%(process)s', "green"),
+            colored('%(threadName)s', "green"),
             colored('%(filename)s', "cyan", attrs=['bold']),
             colored('%(lineno)d', "cyan", attrs=['bold']))
 
         if stream_handler:
             logging.basicConfig(
                 stream=sys.stderr,
-                level=logging.DEBUG,
+                level=logging.INFO,
                 format=fmt)
         return logger
 
-    @staticmethod
-    def cls_logger(func: object()) -> object():
-        """ 各クラスメソッド用ロギングデコレーター\n
-        処理開始時にメソッドが保持しているパラメーターと処理後の結果を出力する
-
-        Args:
-            func: 各クラスのメソッド
-
-        Returns:
-            object(): wrapperメソッドの実行結果
-        """
-        def wrapper(obj, *args, **kwargs) -> object():
-            print("{} [Func: {}] [Input] [args={}] [kwargs={}]".format(
-                colored(STR_DATE, "blue", attrs=['reverse']),
-                colored(func.__qualname__, "cyan", attrs=['bold']),
-                colored(args, "yellow"),
-                colored(kwargs, "yellow")))
-
-            rtn = func(obj, *args, **kwargs)
-            print("{} [Func: {}] [Output] [return: {}]".format(
-                colored(STR_DATE, "blue", attrs=['reverse']),
-                colored(func.__qualname__, "cyan", attrs=['bold']),
-                colored(rtn, "green")), end='\n\n')
-            return rtn
-        return wrapper
-
     def time_measure(self, func):
-        """ 実行時間測定
+        """ 関数の実行時間計測メソッド
 
         Args:
             func: 各クラスのメソッド
@@ -102,11 +75,12 @@ class Logger(object):
         """
         def wrapper(obj, *args, **kwargs):
             start = time.time()
-            self.logger.info("Measure execution time.")
-            self.logger.info("func: {}".format(func.__qualname__))
+            self.logger.info('Measure execution time.')
+            self.logger.info('func: {}'.format(func.__qualname__))
             r = func(obj, *args, **kwargs)
             end = time.time() - start
-            self.logger.info("Total elapsed time: {0} [sec]".format(end))
-            self.logger.info("Total elapsed time: {0} [min]".format((end // 60)))
+            m, s = divmod(end, 60)
+            self.logger.info("Elapsed time:{0} [sec]".format(s))
+            self.logger.info("Elapsed time:{0} [min]".format(m))
             return r
         return wrapper
