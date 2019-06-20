@@ -2,16 +2,15 @@
 from logger import Logger
 
 # Set logger
-LOGGER = Logger(__name__)
+LOGGER = Logger.get_logger(__name__)
 
 
 class TestClass(object):
 
-    @Logger.cls_logger
     def test_func(self, x, y):
         return x * y - 100
 
-    @LOGGER.time_measure
+    @Logger.time_measure(LOGGER, __file__)
     def test_time(self, x, y):
         return [i for i in range(x * y)]
 
@@ -27,10 +26,10 @@ if __name__ == "__main__":
     LOGGER.debug("Start debug")
     try:
         LOGGER.warn("raise Exception")
-        LOGGER.warning("Warnning!! raise Exception")
+        LOGGER.warning("Warning!! raise Exception")
         t.raise_error()
     except ZeroDivisionError:
         LOGGER.error("Division by Zero")
         LOGGER.critical("Division by Zero")
 
-    t.test_time(50, 50)
+    t.test_time(100, 100)
