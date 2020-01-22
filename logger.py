@@ -12,7 +12,7 @@ class Logger(object):
                 'version': 1,
                 'formatters':
                     {
-                        'custmoFormatter': {
+                        'customFormatter': {
                             'format': '%(asctime)s %(levelname)s %(filename)s:%(lineno)d %(funcName)s %(message)s',
                             'datefmt': '%Y-%m-%d %H:%M:%S'
                         }
@@ -35,11 +35,10 @@ class Logger(object):
                         'level': 'DEBUG',
                         'qualname': 'console',
                         'propagate': False
-                    }
-                },
+                    }},
                 'handlers': {
                     'fileRotatingHandler': {
-                        'formatter': 'custmoFormatter',
+                        'formatter': 'customFormatter',
                         'class': 'logging.handlers.TimedRotatingFileHandler',
                         'level': 'ERROR',
                         'filename': 'error.log',
@@ -50,14 +49,12 @@ class Logger(object):
                     'consoleHandler': {
                         'class': 'logging.StreamHandler',
                         'level': 'DEBUG',
-                        'formatter': 'custmoFormatter',
+                        'formatter': 'customFormatter',
                         'stream': 'ext://sys.stdout'
-                    }
-                },
+                    }},
                 'root': {
                     'level': 'DEBUG',
-                    'handlers': ['fileRotatingHandler', 'consoleHandler']
-                }
+                    'handlers': ['fileRotatingHandler', 'consoleHandler']}
             }
         )
         return getLogger(name)
@@ -75,5 +72,7 @@ class Logger(object):
                 m, s = divmod(end, 60)
                 logger.info('Elapsed time:{0} [sec], {1} [min]'.format(s, m))
                 return f
+
             return __wrapper
+
         return __decorator
